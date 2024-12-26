@@ -1,13 +1,22 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Notes from '../components/Notes.jsx'
-import { useSelector } from 'react-redux';
-import { selectBooks } from '../store/booksSlice.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { eraseBook, selectBooks } from '../store/booksSlice.js';
 
 function SingleBookPage() {
 
   const { id } = useParams();
   const books = useSelector(selectBooks)
   const book = books.filter(book => book.id == id)[0];
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  function handleEraseBook(id) {
+    if (confirm('Are you sure you want to delete this book?')) {
+      dispatch(eraseBook(id));
+      navigate('/');
+    }
+  }
 
   return (
     <>
@@ -31,7 +40,7 @@ function SingleBookPage() {
               <input type="checkbox" defaultChecked={book.isRead} />
               <label>{book.isRead ? "Already Read It" : "Haven't Read it yet"}</label>
             </div>
-            <div className="erase-book">
+            <div onClick={() => handleEraseBook(book.id)} className="erase-book">
               Erase book
             </div>
           </div>
