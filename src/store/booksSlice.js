@@ -42,16 +42,24 @@ export const booksSlice = createSlice({
         }
     ],
     reducers: {
-        addBook: books => {
-
+        addBook: (books, action) => {
+            action.payload.id = books.length ? Math.max(...books.map(book => book.id)) + 1 : 1;
+            books.push(action.payload);
         },
         eraseBook: (books, action) => {
-            console.log('a');
             return books.filter(book => book.id != action.payload);
+        },
+        toggleRead: (books, action) => {
+            books.map(book => {
+                if (book.id == action.payload) {
+                    book.isRead = !book.isRead;
+                }
+            }
+            )
         }
     }
 })
 
-export const { addBook, eraseBook } = booksSlice.actions;
+export const { addBook, eraseBook, toggleRead } = booksSlice.actions;
 export const selectBooks = state => state.books;
 export default booksSlice.reducer;

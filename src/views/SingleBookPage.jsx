@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Notes from '../components/Notes.jsx'
 import { useDispatch, useSelector } from 'react-redux';
-import { eraseBook, selectBooks } from '../store/booksSlice.js';
+import { eraseBook, selectBooks, toggleRead } from '../store/booksSlice.js';
 
 function SingleBookPage() {
 
@@ -26,31 +26,37 @@ function SingleBookPage() {
             ← Back to Books
           </button>
         </Link>
+        {book ?
+          <>
+            <div className="single-book">
+              <div className="book-cover">
+                <img src={book.cover} />
+              </div>
 
-        <div className="single-book">
-          <div className="book-cover">
-            <img src={book.cover} />
-          </div>
-
-          <div className="book-details">
-            <h3 className="book-title">{book.title}</h3>
-            <h4 className="book-author">{book.author}</h4>
-            <p>{book.synopsis}</p>
-            <div className="read-checkbox">
-              <input type="checkbox" defaultChecked={book.isRead} />
-              <label>{book.isRead ? "Already Read It" : "Haven't Read it yet"}</label>
+              <div className="book-details">
+                <h3 className="book-title">{book.title}</h3>
+                <h4 className="book-author">{book.author}</h4>
+                <p>{book.synopsis}</p>
+                <div className="read-checkbox">
+                  <input type="checkbox" onClick={() => dispatch(toggleRead(book.id))} defaultChecked={book.isRead} />
+                  <label>{book.isRead ? "Already Read It" : "Haven't Read it yet"}</label>
+                </div>
+                <div onClick={() => handleEraseBook(book.id)} className="erase-book">
+                  Erase book
+                </div>
+              </div>
             </div>
-            <div onClick={() => handleEraseBook(book.id)} className="erase-book">
-              Erase book
-            </div>
-          </div>
-        </div>
 
-        <Notes />
+            <Notes />
+
+
+          </>
+          : <>
+            <p>Book not found. Click button above to go back to the list of books.</p>
+          </>
+        }
 
       </div>
-
-
     </>
   )
 }
